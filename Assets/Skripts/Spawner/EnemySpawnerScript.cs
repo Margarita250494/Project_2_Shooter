@@ -54,7 +54,7 @@ public class EnemySpawner : MonoBehaviour
         GameObject enemy = Instantiate(enemyPrefab, new Vector3(x, enemyPrefab.transform.position.y, z), Quaternion.identity);
 
         // Set the enemy's layer
-        enemy.layer = LayerMask.NameToLayer(enemyLayerName);
+        //enemy.layer = LayerMask.NameToLayer(enemyLayerName);
 
         enemyList.Add(enemy);
         numOfEnemy++;
