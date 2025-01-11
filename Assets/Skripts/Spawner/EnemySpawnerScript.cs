@@ -39,7 +39,7 @@ public class EnemySpawner : MonoBehaviour
     {
         float x, z;
 
-        // Generate spawn positions, avoiding the range near (0, 0)
+        // Generate spawn positions relative to the spawner's position
         do
         {
             x = Random.Range(-spawnRange, spawnRange);
@@ -50,8 +50,14 @@ public class EnemySpawner : MonoBehaviour
             z = Random.Range(-spawnRange, spawnRange);
         } while (z > -2f && z < 2f);
 
+        Vector3 spawnPosition = new Vector3(
+            transform.position.x + x,
+            transform.position.y, // Use the spawner's y-coordinate
+            transform.position.z + z
+        );
+
         // Spawn the enemy
-        GameObject enemy = Instantiate(enemyPrefab, new Vector3(x, enemyPrefab.transform.position.y, z), Quaternion.identity);
+        GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
         // Set the enemy's layer
         enemy.layer = LayerMask.NameToLayer(enemyLayerName);
@@ -59,6 +65,8 @@ public class EnemySpawner : MonoBehaviour
         enemyList.Add(enemy);
         numOfEnemy++;
     }
+
+
 
     private void CheckEnemies()
     {
