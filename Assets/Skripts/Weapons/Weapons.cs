@@ -17,4 +17,9 @@ public class Weapon : ScriptableObject
 
     // New property to choose if the weapon should fire with the button held down
     public bool allowHoldFire = false; // Default to false (click to fire)
+
+    // Recoil properties
+    public float recoilX; // Horizontal recoil (left/right)
+    public float recoilY; // Vertical recoil (up/down)
+    public float recoilZ; // Forward/backward recoil (kickback)
 }

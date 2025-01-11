@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Ak-47
   m_EditorClassIdentifier: 
   weaponName: AK-47
-  weaponModel: {fileID: 1487774384131766, guid: ee329c3cd08e58645834d20702d7f6c6, type: 3}
+  weaponModel: {fileID: 1487774384131766, guid: ee329c3cd08e58645834d20702d7f6c6,
+    type: 3}
   range: 100
   damage: 7
   fireRate: 0.1
@@ -21,6 +22,11 @@ MonoBehaviour:
   reloadTime: 0
   spread: 0.03
   bulletsPerShot: 1
-  muzzleFlashPrefab: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4, type: 3}
-  bulletHolePrefab: {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285, type: 3}
+  muzzleFlashPrefab: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
+    type: 3}
+  bulletHolePrefab: {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285,
+    type: 3}
   allowHoldFire: 1
+  recoilX: 0.178
+  recoilY: 0.3
+  recoilZ: 0

@@ -119,6 +119,19 @@ public class PlayerWeaponManager : MonoBehaviour
         }
 
         bulletsLeft -= currentWeaponData.bulletsPerShot; // Subtract bullets after shooting
+
+        // Apply recoil after shooting
+        ApplyRecoil();
+    }
+
+    private void ApplyRecoil()
+    {
+        // Generate random recoil values based on the weapon's recoil settings
+        float horizontalRecoil = Random.Range(-currentWeaponData.recoilX, currentWeaponData.recoilX);
+        float verticalRecoil = Random.Range(0, currentWeaponData.recoilY);
+
+        // Apply recoil to the camera
+        FindObjectOfType<PlayerCam>().ApplyRecoil(verticalRecoil, horizontalRecoil);
     }
 
     private void Reload()

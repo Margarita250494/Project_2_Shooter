@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   weaponName: Shotgun
-  weaponModel: {fileID: 1236257789494122, guid: 8b0b86b42def11849a8eba21f4a6a684, type: 3}
+  weaponModel: {fileID: 1236257789494122, guid: 8b0b86b42def11849a8eba21f4a6a684,
+    type: 3}
   range: 30
   damage: 10
   fireRate: 1
@@ -21,6 +22,11 @@ MonoBehaviour:
   reloadTime: 2
   spread: 0.45
   bulletsPerShot: 6
-  muzzleFlashPrefab: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4, type: 3}
-  bulletHolePrefab: {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285, type: 3}
+  muzzleFlashPrefab: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
+    type: 3}
+  bulletHolePrefab: {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285,
+    type: 3}
   allowHoldFire: 0
+  recoilX: 0.3
+  recoilY: 2
+  recoilZ: 0
