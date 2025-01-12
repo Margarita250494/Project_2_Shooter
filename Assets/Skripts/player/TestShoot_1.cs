@@ -4,6 +4,7 @@ public class PlayerWeaponManager : MonoBehaviour
 {
     public Weapon[] availableWeapons; // List of all available weapons
     private Weapon currentWeaponData; // Current weapon's data
+    private GameObject currentWeaponModel;
 
     private float nextFireTime = 0f;
     private bool reloading = false;
@@ -45,16 +46,34 @@ public class PlayerWeaponManager : MonoBehaviour
         }
     }
 
+
+
     private void SetWeapon(Weapon weaponData)
     {
         currentWeaponData = weaponData;
-        bulletsLeft = currentWeaponData.magazineSize; // Reset ammo when changing weapons
+        bulletsLeft = currentWeaponData.magazineSize;
 
-        // Set the weapon model in the player's hands (or instantiate it, depending on how it's set up)
-        // Assuming you have a method to handle the model swapping
+        // Destroy the previous weapon model
+        if (currentWeaponModel != null)
+        {
+            Destroy(currentWeaponModel);
+        }
+
+        // Instantiate the new weapon model as a child of the weapon holder
+        if (currentWeaponData.weaponModel != null)
+        {
+            currentWeaponModel = Instantiate(currentWeaponData.weaponModel);
+            //currentWeaponModel.transform.localPosition = Vector3.zero; // Reset position relative to holder
+            //currentWeaponModel.transform.localRotation = Quaternion.identity; // Reset rotation
+        }
+        else
+        {
+            Debug.LogWarning("Weapon model is null!");
+        }
 
         nextFireTime = Time.time + currentWeaponData.fireRate;
     }
+
 
     private void Shoot()
     {
