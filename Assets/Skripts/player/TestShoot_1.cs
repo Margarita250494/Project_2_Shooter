@@ -5,6 +5,7 @@ public class PlayerWeaponManager : MonoBehaviour
     public Weapon[] availableWeapons; // List of all available weapons
     private Weapon currentWeaponData; // Current weapon's data
     private GameObject currentWeaponModel;
+    public Transform weaponHolder;
 
     private float nextFireTime = 0f;
     private bool reloading = false;
@@ -59,12 +60,14 @@ public class PlayerWeaponManager : MonoBehaviour
             Destroy(currentWeaponModel);
         }
 
-        // Instantiate the new weapon model as a child of the weapon holder
+        // Instantiate the new weapon model as a child of the weapon holder or PlayerCam
         if (currentWeaponData.weaponModel != null)
         {
-            currentWeaponModel = Instantiate(currentWeaponData.weaponModel);
-            //currentWeaponModel.transform.localPosition = Vector3.zero; // Reset position relative to holder
-            //currentWeaponModel.transform.localRotation = Quaternion.identity; // Reset rotation
+            // Assuming weaponHolder is a Transform field linked to the PlayerCam in the Inspector
+            currentWeaponModel = Instantiate(currentWeaponData.weaponModel,weaponHolder);
+            currentWeaponModel.transform.localPosition = Vector3.zero;
+           
+
         }
         else
         {
@@ -73,6 +76,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
         nextFireTime = Time.time + currentWeaponData.fireRate;
     }
+
 
 
     private void Shoot()
@@ -139,9 +143,37 @@ public class PlayerWeaponManager : MonoBehaviour
 
         bulletsLeft -= currentWeaponData.bulletsPerShot; // Subtract bullets after shooting
 
+        // Play muzzle flash
+        PlayMuzzleFlash();
+
         // Apply recoil after shooting
         ApplyRecoil();
     }
+
+    private void PlayMuzzleFlash()
+    {
+        if (currentWeaponData.muzzleFlashPrefab != null && currentWeaponModel != null)
+        {
+            Transform muzzlePosition = currentWeaponModel.transform.Find("Muzzle");
+
+            if (muzzlePosition != null)
+            {
+                GameObject flash = Instantiate(currentWeaponData.muzzleFlashPrefab, muzzlePosition.position, muzzlePosition.rotation);
+                flash.transform.parent = muzzlePosition; // Attach it to the muzzle
+                Destroy(flash, 5f); // Destroy it after a short time
+                Debug.Log("Muzzle flash instantiated at " + muzzlePosition.position);
+            }
+            else
+            {
+                Debug.LogWarning("Muzzle position not found on the weapon model.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Muzzle flash prefab or weapon model is null.");
+        }
+    }
+
 
     private void ApplyRecoil()
     {

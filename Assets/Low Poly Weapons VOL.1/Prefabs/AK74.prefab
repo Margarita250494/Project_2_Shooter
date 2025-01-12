@@ -200,6 +200,7 @@ Transform:
   - {fileID: 4871155855958596}
   - {fileID: 4977263084664720}
   - {fileID: 4628190596468080}
+  - {fileID: 5000700125473242717}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33705837635148522
@@ -335,3 +336,34 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7765870308730754410
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5000700125473242717}
+  m_Layer: 0
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5000700125473242717
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7765870308730754410}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.01926285, y: 0.7207816, z: 0.039317276, w: 0.6917782}
+  m_LocalPosition: {x: -0.018, y: -0.015, z: -0.431}
+  m_LocalScale: {x: 0.99999964, y: 1, z: 0.99999976}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4519716788627816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
