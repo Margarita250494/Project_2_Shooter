@@ -81,9 +81,10 @@ public class PlayerWeaponManager : MonoBehaviour
 
     private void Shoot()
     {
-        if (bulletsLeft <= 0)
+        if (bulletsLeft == 1)
         {
-            Debug.Log("Out of Ammo!");
+            Debug.Log("Ammo! 1");
+            Reload();
             return; // Prevent shooting if no ammo
         }
 
