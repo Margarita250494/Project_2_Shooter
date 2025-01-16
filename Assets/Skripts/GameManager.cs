@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Gun
@@ -50,21 +52,26 @@ public class Gun
 
 public class GameManager : MonoBehaviour
 {
-    public Text[] BulletLeftTexts; //Pistol, Shotgun, Rifle
-    public GameObject[] GunBackgrounds; //Pistol, Shotgun, Rifle
-    public Text ScoreNumber;
+    public Text[] BulletLeftTexts; //Pistol, Rifle, Shotgun
+    public GameObject[] GunBackgrounds; //Pistol, Rifle, Shotgun
+    public Text InGameScoreText;
+
+    public GameObject InGameCanvas;
+    public GameObject PauseCanvas;
+    public Text PauseScoreText;
 
     private Gun[] Guns = new Gun[] {
         new Gun("Pistol", 6, 2500),
-        new Gun("Shotgun", 1, 1000),
-        new Gun("Rifle", 30, 5000)
+        new Gun("Rifle", 30, 5000),
+        new Gun("Shotgun", 1, 1000)
     };
 
     private bool IsReloading = false;
     private int BulletLeft;
     private Gun BeingUsedGun;
-    private int CurrentGun; //Pistol = 0, Shotgun = 1, Rifle = 2
+    private int CurrentGun; //Pistol = 0, Rifle = 1, Shotgun = 2
 
+    private bool IsPaused = false;
     private int Score;
 
 
@@ -80,7 +87,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (!IsReloading)
+        if (!IsReloading && !IsPaused)
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
@@ -101,10 +108,11 @@ public class GameManager : MonoBehaviour
                 BeingUsedGun = Guns[2];
                 UpdateUIAfterChangingGun(2);
             }
-            if (Input.GetMouseButtonDown(0))  // left mouse
-            {
-                Fire();
-            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
         }
     }
 
@@ -141,6 +149,40 @@ public class GameManager : MonoBehaviour
     public void GainScore(int Addition)
     { 
         Score += Addition;
-        ScoreNumber.text = Score.ToString();
+        InGameScoreText.text = Score.ToString();
+    }
+
+    public void TogglePause()
+    {
+        if (IsPaused)
+        {
+            ResumeGame();
+        }
+        else
+        {
+            PauseGame();
+        }
+    }
+
+    public void PauseGame()
+    {
+        PauseScoreText.text = Score.ToString();
+        InGameCanvas.SetActive(false);
+        PauseCanvas.SetActive(true);
+        Time.timeScale = 0f;
+        IsPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        InGameCanvas.SetActive(true);
+        PauseCanvas.SetActive(false);
+        Time.timeScale = 1f;
+        IsPaused = false;
+    }
+
+    public void BackHome()
+    {
+        SceneManager.LoadScene("Home");
     }
 }
