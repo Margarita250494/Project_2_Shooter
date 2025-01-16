@@ -6,6 +6,7 @@ public class PlayerWeaponManager : MonoBehaviour
     private Weapon currentWeaponData; // Current weapon's data
     private GameObject currentWeaponModel;
     public Transform weaponHolder;
+    private Animation animator;
 
     private float nextFireTime = 0f;
     private bool reloading = false;
@@ -23,15 +24,17 @@ public class PlayerWeaponManager : MonoBehaviour
         // Switch weapons with number keys
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            SetWeapon(availableWeapons[0]);
+         
+            SetWeapon(availableWeapons[1]);
+            
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            SetWeapon(availableWeapons[1]);
+            SetWeapon(availableWeapons[2]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            SetWeapon(availableWeapons[2]);
+            SetWeapon(availableWeapons[3]);
         }
 
         // Reload when R is pressed

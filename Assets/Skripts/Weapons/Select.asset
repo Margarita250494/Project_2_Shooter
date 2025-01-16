@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d8ea0a03ae66b74fb8c7ca551351084, type: 3}
-  m_Name: Bazuka
+  m_Name: Select
   m_EditorClassIdentifier: 
   weaponName: 
   weaponModel: {fileID: 0}
