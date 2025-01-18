@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Object = System.Object;
+
 
 public class Gun
 {
@@ -54,11 +54,20 @@ public class GameManager : MonoBehaviour
 {
     public Text[] BulletLeftTexts; //Pistol, Rifle, Shotgun
     public GameObject[] GunBackgrounds; //Pistol, Rifle, Shotgun
-    public Text InGameScoreText;
+
+    public float MaxTime;
+    public Text TimerText;
 
     public GameObject InGameCanvas;
     public GameObject PauseCanvas;
+    public GameObject FinishCanvas;
+
+    public Text InGameScoreText;
     public Text PauseScoreText;
+    public Text FinishScoreText;
+    public Text FinishCanvasHighscoreText;
+
+    private float TimeLeft;
 
     private Gun[] Guns = new Gun[] {
         new Gun("Pistol", 6, 2500),
@@ -71,13 +80,15 @@ public class GameManager : MonoBehaviour
     private Gun BeingUsedGun;
     private int CurrentGun; //Pistol = 0, Rifle = 1, Shotgun = 2
 
-    private bool IsPaused = false;
+    private bool TimerOn = true;
     private int Score;
 
 
     void Start()
     {
-        Debug.Log(ModeManager.Instance.Difficulty);
+        Debug.Log(ModeManager.Instance.ModeNr);
+
+        TimeLeft = MaxTime;
 
         BeingUsedGun = Guns[0];
         BulletLeft = BeingUsedGun.AmmoCapacity;
@@ -87,7 +98,20 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (!IsReloading && !IsPaused)
+        if (!TimerOn) return;
+
+        if (TimeLeft > 0)
+        {
+            TimeLeft -= Time.deltaTime;
+            UpdateTimer(TimeLeft);
+        }
+        else
+        {
+            FinishGame();
+        }
+
+
+        if (!IsReloading)
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
@@ -114,6 +138,16 @@ public class GameManager : MonoBehaviour
         {
             TogglePause();
         }
+    }
+
+    private void UpdateTimer(float currentTime)
+    {
+        currentTime += 1;
+
+        float minutes = Mathf.FloorToInt(currentTime / 60);
+        float seconds = Mathf.FloorToInt(currentTime % 60);
+
+        TimerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     private void UpdateUIAfterChangingGun(int NextGun)
@@ -154,7 +188,7 @@ public class GameManager : MonoBehaviour
 
     public void TogglePause()
     {
-        if (IsPaused)
+        if (!TimerOn)
         {
             ResumeGame();
         }
@@ -170,7 +204,7 @@ public class GameManager : MonoBehaviour
         InGameCanvas.SetActive(false);
         PauseCanvas.SetActive(true);
         Time.timeScale = 0f;
-        IsPaused = true;
+        TimerOn = false;
     }
 
     public void ResumeGame()
@@ -178,7 +212,29 @@ public class GameManager : MonoBehaviour
         InGameCanvas.SetActive(true);
         PauseCanvas.SetActive(false);
         Time.timeScale = 1f;
-        IsPaused = false;
+        TimerOn = true;
+    }
+
+    public void FinishGame()
+    {
+        TimeLeft = MaxTime;
+
+        FinishScoreText.text = Score.ToString();
+        InGameCanvas.SetActive(false);
+        FinishCanvas.SetActive(true);
+        Time.timeScale = 0f;
+        TimerOn = false;
+
+
+        int storedHighscore = PlayerPrefs.GetInt(ModeManager.Instance.HighscoreKey);
+
+        if (Score > storedHighscore)
+        {
+            PlayerPrefs.SetInt(ModeManager.Instance.HighscoreKey, Score);
+            PlayerPrefs.SetString(ModeManager.Instance.HighscoreTimestampKey, DateTime.Now.ToString("HH:mm dd.MM.yyyy"));
+            FinishCanvasHighscoreText.text = "Congratulation! New Highscore!";
+        }
+        else FinishCanvasHighscoreText.text = "Highscore: " + storedHighscore;
     }
 
     public void BackHome()
