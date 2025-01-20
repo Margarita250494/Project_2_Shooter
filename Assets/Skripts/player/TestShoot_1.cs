@@ -96,24 +96,21 @@ public class PlayerWeaponManager : MonoBehaviour
         // Loop through the number of bullets per shot (shotgun spread)
         for (int i = 0; i < currentWeaponData.bulletsPerShot; i++)
         {
-            // Randomize the shoot direction for spread effect
             Vector3 shootDirection = transform.forward;
-            shootDirection.x += Random.Range(-currentWeaponData.spread, currentWeaponData.spread); // Add horizontal spread
-            shootDirection.y += Random.Range(-currentWeaponData.spread, currentWeaponData.spread); // Add vertical spread
-            shootDirection.z += Random.Range(-currentWeaponData.spread, currentWeaponData.spread); // Add depth spread
+            shootDirection.x += Random.Range(-currentWeaponData.spread, currentWeaponData.spread);
+            shootDirection.y += Random.Range(-currentWeaponData.spread, currentWeaponData.spread);
+            shootDirection.z += Random.Range(-currentWeaponData.spread, currentWeaponData.spread);
             shootDirection.Normalize();
 
             Ray ray = new Ray(transform.position, shootDirection);
             RaycastHit hit;
 
-            // Perform the raycast and check if it hits something
-            Debug.DrawRay(ray.origin, ray.direction * currentWeaponData.range, Color.red, 1f); // Draw red ray for debugging
+            Debug.DrawRay(ray.origin, ray.direction * currentWeaponData.range, Color.red, 1f);
 
             if (Physics.Raycast(ray, out hit, currentWeaponData.range))
             {
-                Debug.Log("Hit: " + hit.collider.name); // Check what it hits
+                Debug.Log("Hit: " + hit.collider.name);
 
-                // If the ray hits an enemy (layer "Enemy"), apply damage
                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 {
                     EnemyScript enemyScript = hit.collider.GetComponentInParent<EnemyScript>();
@@ -122,14 +119,12 @@ public class PlayerWeaponManager : MonoBehaviour
                     {
                         int damageToApply = currentWeaponData.damage;
 
-                        // Check if it's a headshot (adjust damage for headshots)
                         if (hit.collider.name == "EnemyHead")
                         {
                             Debug.Log("Headshot detected!");
-                            damageToApply *= 10; // Apply 10x damage for headshots
+                            damageToApply *= 10;
                         }
 
-                        // Apply the calculated damage
                         enemyScript.TakeDamage(damageToApply);
                         Debug.Log("Damage Applied: " + damageToApply);
                     }
@@ -145,14 +140,15 @@ public class PlayerWeaponManager : MonoBehaviour
             }
         }
 
-        bulletsLeft -= currentWeaponData.bulletsPerShot; // Subtract bullets after shooting
+        bulletsLeft -= currentWeaponData.bulletsPerShot;
 
-        // Play muzzle flash
+        // Play the shoot sound
+        PlaySound(currentWeaponData.shootSound);
+
         PlayMuzzleFlash();
-
-        // Apply recoil after shooting
         ApplyRecoil();
     }
+
 
     private void PlayMuzzleFlash()
     {
@@ -192,6 +188,7 @@ public class PlayerWeaponManager : MonoBehaviour
     private void Reload()
     {
         if (reloading) return; // Prevent starting reload if already reloading
+        PlaySound(currentWeaponData.reloadSound);
 
         reloading = true;
         Debug.Log("Reloading...");
@@ -206,4 +203,16 @@ public class PlayerWeaponManager : MonoBehaviour
         reloading = false;
         Debug.Log("Reload complete.");
     }
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            GetComponent<AudioSource>().PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.LogWarning("No audio clip assigned for this action.");
+        }
+    }
+
 }

@@ -226,7 +226,7 @@ public class GameManager : MonoBehaviour
         TimerOn = false;
 
 
-        int storedHighscore = PlayerPrefs.GetInt(ModeManager.Instance.HighscoreKey);
+       int storedHighscore = PlayerPrefs.GetInt(ModeManager.Instance.HighscoreKey);
 
         if (Score > storedHighscore)
         {

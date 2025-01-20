@@ -12,6 +12,8 @@ public class Weapon : ScriptableObject
     public float reloadTime;
     public float spread;
     public int bulletsPerShot;
+    public AudioClip shootSound; 
+    public AudioClip reloadSound;
     public GameObject muzzleFlashPrefab;
     public GameObject bulletHolePrefab;
 
