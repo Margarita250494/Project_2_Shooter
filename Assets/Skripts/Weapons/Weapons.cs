@@ -15,7 +15,6 @@ public class Weapon : ScriptableObject
     public AudioClip shootSound; 
     public AudioClip reloadSound;
     public GameObject muzzleFlashPrefab;
-    public GameObject bulletHolePrefab;
 
     // New property to choose if the weapon should fire with the button held down
     public bool allowHoldFire = false; // Default to false (click to fire)

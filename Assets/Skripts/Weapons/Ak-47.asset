@@ -22,11 +22,9 @@ MonoBehaviour:
   reloadTime: 0
   spread: 0.03
   bulletsPerShot: 1
-  shootSound: {fileID: 8300000, guid: 0fb773f916d0c4302b04ec5a5e931d5e, type: 3}
+  shootSound: {fileID: 8300000, guid: 019511abd94b1424da55576aa7c443fa, type: 3}
   reloadSound: {fileID: 8300000, guid: b24c91faf596e43d7835b899ec2824bf, type: 3}
   muzzleFlashPrefab: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
-    type: 3}
-  bulletHolePrefab: {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285,
     type: 3}
   allowHoldFire: 1
   recoilX: 0.178

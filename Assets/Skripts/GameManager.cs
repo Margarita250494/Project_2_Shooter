@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -79,15 +80,14 @@ public class GameManager : MonoBehaviour
     private int BulletLeft;
     private Gun BeingUsedGun;
     private int CurrentGun; //Pistol = 0, Rifle = 1, Shotgun = 2
-
-    private bool TimerOn = true;
+    public bool TimerOn { get; private set; } // TimerOn is public, but only modifiable within this class
     private int Score;
 
 
     void Start()
     {
         Debug.Log(ModeManager.Instance.ModeNr);
-
+        TimerOn = true;
         TimeLeft = MaxTime;
 
         BeingUsedGun = Guns[0];
@@ -97,48 +97,59 @@ public class GameManager : MonoBehaviour
     }
 
     void Update()
+{
+    if (!TimerOn) return;
+
+    // Timer logic
+    if (TimeLeft > 0)
     {
-        if (!TimerOn) return;
+        TimeLeft -= Time.deltaTime;
+        UpdateTimer(TimeLeft);
+    }
+    else
+    {
+        FinishGame();
+    }
 
-        if (TimeLeft > 0)
+    // Reload logic
+    if (!IsReloading)
+    {
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            TimeLeft -= Time.deltaTime;
-            UpdateTimer(TimeLeft);
-        }
-        else
-        {
-            FinishGame();
-        }
-
-
-        if (!IsReloading)
-        {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                _ = ReloadAsync();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha1) && !Object.ReferenceEquals(BeingUsedGun, Guns[0]))
-            {
-                BeingUsedGun = Guns[0];
-                UpdateUIAfterChangingGun(0);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2) && !Object.ReferenceEquals(BeingUsedGun, Guns[1]))
-            {
-                BeingUsedGun = Guns[1];
-                UpdateUIAfterChangingGun(1);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3) && !Object.ReferenceEquals(BeingUsedGun, Guns[2]))
-            {
-                BeingUsedGun = Guns[2];
-                UpdateUIAfterChangingGun(2);
-            }
+            _ = ReloadAsync();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // Gun switching logic
+        if (Input.GetKeyDown(KeyCode.Alpha1) && !Object.ReferenceEquals(BeingUsedGun, Guns[0]))
         {
-            TogglePause();
+            BeingUsedGun = Guns[0];
+            UpdateUIAfterChangingGun(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2) && !Object.ReferenceEquals(BeingUsedGun, Guns[1]))
+        {
+            BeingUsedGun = Guns[1];
+            UpdateUIAfterChangingGun(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3) && !Object.ReferenceEquals(BeingUsedGun, Guns[2]))
+        {
+            BeingUsedGun = Guns[2];
+            UpdateUIAfterChangingGun(2);
+        }
+
+        // Firing logic
+        if (Input.GetMouseButtonDown(0)) // Left mouse button for shooting
+        {
+            Fire();
         }
     }
+
+    // Pause logic
+    if (Input.GetKeyDown(KeyCode.Escape))
+    {
+        TogglePause();
+    }
+}
+
 
     private void UpdateTimer(float currentTime)
     {
@@ -163,22 +174,36 @@ public class GameManager : MonoBehaviour
 
     public void Fire()
     {
-        if (BeingUsedGun.Fire()) _ = ReloadAsync();
-        else BulletLeftTexts[CurrentGun].text = BeingUsedGun.BulletLeft + " / " + BeingUsedGun.AmmoCapacity;
+        if (IsReloading) return; // Prevent firing while reloading
+
+        if (BeingUsedGun.Fire())
+        {
+            // If the gun is empty after firing, start reloading
+            BulletLeftTexts[CurrentGun].text = "Reloading...";
+            _ = ReloadAsync();
+        }
+        else
+        {
+            // Update the UI with the remaining ammo
+            BulletLeftTexts[CurrentGun].text = BeingUsedGun.BulletLeft + " / " + BeingUsedGun.AmmoCapacity;
+        }
     }
+
 
     private async Task ReloadAsync()
     {
-        if (BeingUsedGun.IsAmmoFull()) return;
+        if (BeingUsedGun.IsAmmoFull()) return; // No need to reload if ammo is already full
 
         BulletLeftTexts[CurrentGun].text = "Reloading...";
         IsReloading = true;
 
-        await Task.Delay(BeingUsedGun.CalcLoadingTime());
-        BeingUsedGun.Reload();
+        await Task.Delay(BeingUsedGun.CalcLoadingTime()); // Simulate reload time
+
+        BeingUsedGun.Reload(); // Reload the gun
         BulletLeftTexts[CurrentGun].text = BeingUsedGun.AmmoCapacity + " / " + BeingUsedGun.AmmoCapacity;
         IsReloading = false;
     }
+
 
     public void GainScore(int Addition)
     { 

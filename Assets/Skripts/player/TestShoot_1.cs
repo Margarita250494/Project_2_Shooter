@@ -12,21 +12,42 @@ public class PlayerWeaponManager : MonoBehaviour
     private bool reloading = false;
     private int bulletsLeft;
 
+    private GameManager gameManager; // Reference to GameManager
+
     private void Start()
     {
         // Initialize with the first weapon (for example, Pistol)
         SetWeapon(availableWeapons[0]);
         bulletsLeft = currentWeaponData.magazineSize; // Start with full ammo
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        // Find GameManager in the scene
+        gameManager = FindObjectOfType<GameManager>();
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager not found in the scene!");
+        }
     }
 
     private void Update()
     {
+        // Skip input handling if the game is paused
+        if (gameManager != null && !gameManager.TimerOn)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         // Switch weapons with number keys
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-         
             SetWeapon(availableWeapons[1]);
-            
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -50,8 +71,6 @@ public class PlayerWeaponManager : MonoBehaviour
         }
     }
 
-
-
     private void SetWeapon(Weapon weaponData)
     {
         currentWeaponData = weaponData;
@@ -66,11 +85,8 @@ public class PlayerWeaponManager : MonoBehaviour
         // Instantiate the new weapon model as a child of the weapon holder or PlayerCam
         if (currentWeaponData.weaponModel != null)
         {
-            // Assuming weaponHolder is a Transform field linked to the PlayerCam in the Inspector
-            currentWeaponModel = Instantiate(currentWeaponData.weaponModel,weaponHolder);
+            currentWeaponModel = Instantiate(currentWeaponData.weaponModel, weaponHolder);
             currentWeaponModel.transform.localPosition = Vector3.zero;
-           
-
         }
         else
         {
@@ -80,20 +96,17 @@ public class PlayerWeaponManager : MonoBehaviour
         nextFireTime = Time.time + currentWeaponData.fireRate;
     }
 
-
-
     private void Shoot()
     {
         if (bulletsLeft == 1)
         {
             Debug.Log("Ammo! 1");
             Reload();
-            return; // Prevent shooting if no ammo
+            return;
         }
 
         nextFireTime = Time.time + currentWeaponData.fireRate;
 
-        // Loop through the number of bullets per shot (shotgun spread)
         for (int i = 0; i < currentWeaponData.bulletsPerShot; i++)
         {
             Vector3 shootDirection = transform.forward;
@@ -141,68 +154,29 @@ public class PlayerWeaponManager : MonoBehaviour
         }
 
         bulletsLeft -= currentWeaponData.bulletsPerShot;
-
-        // Play the shoot sound
         PlaySound(currentWeaponData.shootSound);
-
         PlayMuzzleFlash();
         ApplyRecoil();
     }
 
-
-    private void PlayMuzzleFlash()
-    {
-        if (currentWeaponData.muzzleFlashPrefab != null && currentWeaponModel != null)
-        {
-            Transform muzzlePosition = currentWeaponModel.transform.Find("Muzzle");
-
-            if (muzzlePosition != null)
-            {
-                GameObject flash = Instantiate(currentWeaponData.muzzleFlashPrefab, muzzlePosition.position, muzzlePosition.rotation);
-                flash.transform.parent = muzzlePosition; // Attach it to the muzzle
-                Destroy(flash, 5f); // Destroy it after a short time
-                Debug.Log("Muzzle flash instantiated at " + muzzlePosition.position);
-            }
-            else
-            {
-                Debug.LogWarning("Muzzle position not found on the weapon model.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Muzzle flash prefab or weapon model is null.");
-        }
-    }
-
-
-    private void ApplyRecoil()
-    {
-        // Generate random recoil values based on the weapon's recoil settings
-        float horizontalRecoil = Random.Range(-currentWeaponData.recoilX, currentWeaponData.recoilX);
-        float verticalRecoil = Random.Range(0, currentWeaponData.recoilY);
-
-        // Apply recoil to the camera
-        FindObjectOfType<PlayerCam>().ApplyRecoil(verticalRecoil, horizontalRecoil);
-    }
-
     private void Reload()
     {
-        if (reloading) return; // Prevent starting reload if already reloading
+        if (reloading) return;
         PlaySound(currentWeaponData.reloadSound);
 
         reloading = true;
         Debug.Log("Reloading...");
 
-        // Simulate reload time
         Invoke("ReloadFinished", currentWeaponData.reloadTime);
     }
 
     private void ReloadFinished()
     {
-        bulletsLeft = currentWeaponData.magazineSize; // Reset to full ammo
+        bulletsLeft = currentWeaponData.magazineSize;
         reloading = false;
         Debug.Log("Reload complete.");
     }
+
     private void PlaySound(AudioClip clip)
     {
         if (clip != null)
@@ -215,4 +189,30 @@ public class PlayerWeaponManager : MonoBehaviour
         }
     }
 
+    private void PlayMuzzleFlash()
+    {
+        if (currentWeaponData.muzzleFlashPrefab != null && currentWeaponModel != null)
+        {
+            Transform muzzlePosition = currentWeaponModel.transform.Find("Muzzle");
+
+            if (muzzlePosition != null)
+            {
+                GameObject flash = Instantiate(currentWeaponData.muzzleFlashPrefab, muzzlePosition.position, muzzlePosition.rotation);
+                flash.transform.parent = muzzlePosition;
+                Destroy(flash, 5f);
+            }
+            else
+            {
+                Debug.LogWarning("Muzzle position not found on the weapon model.");
+            }
+        }
+    }
+
+    private void ApplyRecoil()
+    {
+        float horizontalRecoil = Random.Range(-currentWeaponData.recoilX, currentWeaponData.recoilX);
+        float verticalRecoil = Random.Range(0, currentWeaponData.recoilY);
+
+        FindObjectOfType<PlayerCam>().ApplyRecoil(verticalRecoil, horizontalRecoil);
+    }
 }
