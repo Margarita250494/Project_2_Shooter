@@ -23,4 +23,47 @@ public class Weapon : ScriptableObject
     public float recoilX; // Horizontal recoil (left/right)
     public float recoilY; // Vertical recoil (up/down)
     public float recoilZ; // Forward/backward recoil (kickback)
+
+    private int bulletLeftForUI;
+    private int AmmoCapacityForUI;
+
+    public void EnableWeapon()
+    {
+        if(bulletsPerShot == 0) return;
+
+        AmmoCapacityForUI = magazineSize / bulletsPerShot;
+        bulletLeftForUI = AmmoCapacityForUI;
+        
+    }
+
+    public void Fire()
+    {
+        bulletLeftForUI--;
+    }
+
+    public void Reload()
+    {
+        bulletLeftForUI = magazineSize / bulletsPerShot;
+    }
+
+    public int GetBulletLeftForUI()
+    {
+        return bulletLeftForUI;
+    }
+
+    public float GetReloadTime()
+    {
+        if (bulletLeftForUI == 0) return reloadTime;
+        else return (int)(((float)(magazineSize / bulletsPerShot) - bulletLeftForUI) / magazineSize * reloadTime);
+    }
+
+    public bool IsAmmoFull()
+    {
+        return bulletLeftForUI == magazineSize / bulletsPerShot;
+    }
+
+    public int GetAmmoCapacityForUI()
+    {
+        return AmmoCapacityForUI;
+    }
 }

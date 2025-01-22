@@ -7,57 +7,9 @@ using UnityEngine.UI;
 using Object = System.Object;
 
 
-public class Gun
+public class GameUIManager : MonoBehaviour
 {
-    public string Name;
-    public int AmmoCapacity;
-    public int LoadingTimeFullAmmo;
-    public int BulletLeft;
-
-    public Gun(string Name, int AmmoCapacity, int LoadingTimeFullAmmo)
-    {
-        this.Name = Name;
-        this.AmmoCapacity = AmmoCapacity;
-        BulletLeft = AmmoCapacity;
-        this.LoadingTimeFullAmmo = LoadingTimeFullAmmo; //milisecond
-    }
-
-    public bool Fire()
-    {
-        if (BulletLeft > 0)
-        {
-            BulletLeft--;
-            Debug.Log("Fired. BulletLeft: " + BulletLeft);
-        }
-
-        return BulletLeft == 0;
-    }
-
-    public void Reload()
-    {
-        BulletLeft = AmmoCapacity;
-        Debug.Log("Reloaded. BulletLeft: " + BulletLeft);
-    }
-
-    public bool IsAmmoFull()
-    {
-        return BulletLeft == AmmoCapacity;
-    }
-
-    public int CalcLoadingTime()
-    {
-        if (BulletLeft == 0) return LoadingTimeFullAmmo;
-        else return (int) ((float) (AmmoCapacity - BulletLeft) / AmmoCapacity * LoadingTimeFullAmmo);
-    }
-}
-
-public class GameManager : MonoBehaviour
-{
-    /*
-     *  Information from Weapon from Vlad
-     */
-
-    public static GameManager Instance;
+    public static GameUIManager Instance;
 
     public Text[] BulletLeftTexts; //Pistol, Rifle, Shotgun
     public GameObject[] GunBackgrounds; //Pistol, Rifle, Shotgun
@@ -76,16 +28,7 @@ public class GameManager : MonoBehaviour
 
     private float TimeLeft;
 
-    private Gun[] Guns = new Gun[] {
-        new Gun("Pistol", 6, 2500),
-        new Gun("Rifle", 30, 5000),
-        new Gun("Shotgun", 1, 1000)
-    };
-
-    private bool IsReloading = false;
-    private int BulletLeft;
-    private Gun BeingUsedGun;
-    private int CurrentGun; //Pistol = 0, Rifle = 1, Shotgun = 2
+    private int CurrentGun; //Pistol = 1, Rifle = 2, Shotgun = 3
     public bool TimerOn { get; private set; } // TimerOn is public, but only modifiable within this class
     private int Score;
 
@@ -107,67 +50,29 @@ public class GameManager : MonoBehaviour
         Debug.Log(ModeManager.Instance.ModeNr);
         TimerOn = true;
         TimeLeft = MaxTime;
-
-        BeingUsedGun = Guns[0];
-        BulletLeft = BeingUsedGun.AmmoCapacity;
-        BulletLeftTexts[0].text = "6 / 6";
-        GunBackgrounds[0].GetComponent<Image>().rectTransform.sizeDelta = new Vector2(200, 150);
     }
 
     void Update()
-{
-    if (!TimerOn) return;
-
-    // Timer logic
-    if (TimeLeft > 0)
     {
-        TimeLeft -= Time.deltaTime;
-        UpdateTimer(TimeLeft);
-    }
-    else
-    {
-        FinishGame();
-    }
+        if (!TimerOn) return;
 
-    // Reload logic
-    if (!IsReloading)
-    {
-        if (Input.GetKeyDown(KeyCode.R))
+        // Timer logic
+        if (TimeLeft > 0)
         {
-            _ = ReloadAsync();
+            TimeLeft -= Time.deltaTime;
+            UpdateTimer(TimeLeft);
+        }
+        else
+        {
+            FinishGame();
         }
 
-        // Gun switching logic
-        if (Input.GetKeyDown(KeyCode.Alpha1) && !Object.ReferenceEquals(BeingUsedGun, Guns[0]))
+        // Pause logic
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            BeingUsedGun = Guns[0];
-            UpdateUIAfterChangingGun(0);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2) && !Object.ReferenceEquals(BeingUsedGun, Guns[1]))
-        {
-            BeingUsedGun = Guns[1];
-            UpdateUIAfterChangingGun(1);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3) && !Object.ReferenceEquals(BeingUsedGun, Guns[2]))
-        {
-            BeingUsedGun = Guns[2];
-            UpdateUIAfterChangingGun(2);
-        }
-
-        // Firing logic
-        if (Input.GetMouseButtonDown(0)) // Left mouse button for shooting
-        {
-            Fire();
+            TogglePause();
         }
     }
-
-    // Pause logic
-    if (Input.GetKeyDown(KeyCode.Escape))
-    {
-        TogglePause();
-    }
-}
-
 
     private void UpdateTimer(float currentTime)
     {
@@ -179,47 +84,25 @@ public class GameManager : MonoBehaviour
         TimerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
-    private void UpdateUIAfterChangingGun(int NextGun)
+    public void UpdateUIAfterChangingGun(int NextGun, Weapon wp)
     {
         BulletLeftTexts[CurrentGun].text = "";
-        BulletLeftTexts[NextGun].text = BeingUsedGun.BulletLeft + " / " + BeingUsedGun.AmmoCapacity;
+        BulletLeftTexts[NextGun-1].text = wp.GetBulletLeftForUI() + " / " + wp.GetAmmoCapacityForUI();
 
         GunBackgrounds[CurrentGun].GetComponent<Image>().rectTransform.sizeDelta = new Vector2(200, 80);
-        GunBackgrounds[NextGun].GetComponent<Image>().rectTransform.sizeDelta = new Vector2(200, 150);
+        GunBackgrounds[NextGun-1].GetComponent<Image>().rectTransform.sizeDelta = new Vector2(200, 150);
 
-        CurrentGun = NextGun;
+        CurrentGun = NextGun-1;
     }
 
-    public void Fire()
+    public void UpdateUIOfBulletStatusForCurrentWp(Weapon wp)
     {
-        if (IsReloading) return; // Prevent firing while reloading
-
-        if (BeingUsedGun.Fire())
-        {
-            // If the gun is empty after firing, start reloading
-            BulletLeftTexts[CurrentGun].text = "Reloading...";
-            _ = ReloadAsync();
-        }
-        else
-        {
-            // Update the UI with the remaining ammo
-            BulletLeftTexts[CurrentGun].text = BeingUsedGun.BulletLeft + " / " + BeingUsedGun.AmmoCapacity;
-        }
+        BulletLeftTexts[CurrentGun].text = wp.GetBulletLeftForUI() + " / " + wp.GetAmmoCapacityForUI();
     }
 
-
-    private async Task ReloadAsync()
+    public void UpdateUIForReloading()
     {
-        if (BeingUsedGun.IsAmmoFull()) return; // No need to reload if ammo is already full
-
         BulletLeftTexts[CurrentGun].text = "Reloading...";
-        IsReloading = true;
-
-        await Task.Delay(BeingUsedGun.CalcLoadingTime()); // Simulate reload time
-
-        BeingUsedGun.Reload(); // Reload the gun
-        BulletLeftTexts[CurrentGun].text = BeingUsedGun.AmmoCapacity + " / " + BeingUsedGun.AmmoCapacity;
-        IsReloading = false;
     }
 
 

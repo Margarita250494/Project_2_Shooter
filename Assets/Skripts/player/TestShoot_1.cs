@@ -10,21 +10,26 @@ public class PlayerWeaponManager : MonoBehaviour
 
     private float nextFireTime = 0f;
     private bool reloading = false;
-    public int bulletsLeft;
 
-    private GameManager gameManager; // Reference to GameManager
+    private GameUIManager gameManager; // Reference to GameManager
 
     private void Start()
     {
+        // Start with full ammo for all weapons
+        foreach (Weapon wp in availableWeapons)
+        {
+            wp.EnableWeapon();
+        }
+
         // Initialize with the first weapon (for example, Pistol)
-        SetWeapon(availableWeapons[0]);
-        bulletsLeft = currentWeaponData.magazineSize; // Start with full ammo
+        SetWeapon(availableWeapons[1]);
+        GameUIManager.Instance.UpdateUIAfterChangingGun(1, availableWeapons[1]);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         // Find GameManager in the scene
-        gameManager = FindObjectOfType<GameManager>();
+        gameManager = FindObjectOfType<GameUIManager>();
         if (gameManager == null)
         {
             Debug.LogError("GameManager not found in the scene!");
@@ -45,21 +50,24 @@ public class PlayerWeaponManager : MonoBehaviour
         Cursor.visible = false;
 
         // Switch weapons with number keys
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1) && !reloading)
         {
             SetWeapon(availableWeapons[1]);
+            GameUIManager.Instance.UpdateUIAfterChangingGun(1, currentWeaponData);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.Alpha2) && !reloading)
         {
             SetWeapon(availableWeapons[2]);
+            GameUIManager.Instance.UpdateUIAfterChangingGun(2, currentWeaponData);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.Alpha3) && !reloading)
         {
             SetWeapon(availableWeapons[3]);
+            GameUIManager.Instance.UpdateUIAfterChangingGun(3, currentWeaponData);
         }
 
         // Reload when R is pressed
-        if (Input.GetKeyDown(KeyCode.R) && !reloading && bulletsLeft < currentWeaponData.magazineSize)
+        if (Input.GetKeyDown(KeyCode.R) && !reloading && !currentWeaponData.IsAmmoFull())
         {
             Reload();
         }
@@ -74,7 +82,6 @@ public class PlayerWeaponManager : MonoBehaviour
     private void SetWeapon(Weapon weaponData)
     {
         currentWeaponData = weaponData;
-        bulletsLeft = currentWeaponData.magazineSize;
 
         // Destroy the previous weapon model
         if (currentWeaponModel != null)
@@ -98,12 +105,16 @@ public class PlayerWeaponManager : MonoBehaviour
 
     private void Shoot()
     {
+        /*
         if (bulletsLeft == 1)
         {
             Debug.Log("Ammo! 1");
             Reload();
             return;
         }
+        */
+
+        if (reloading) return;
 
         nextFireTime = Time.time + currentWeaponData.fireRate;
 
@@ -153,11 +164,18 @@ public class PlayerWeaponManager : MonoBehaviour
             }
         }
 
-        bulletsLeft -= currentWeaponData.bulletsPerShot;
+        currentWeaponData.Fire();
+        GameUIManager.Instance.UpdateUIOfBulletStatusForCurrentWp(currentWeaponData);
+
         PlaySound(currentWeaponData.shootSound);
         //playerControllerUi.OnWeaponShoot(int weaponID)
         PlayMuzzleFlash();
         ApplyRecoil();
+
+        if (currentWeaponData.GetBulletLeftForUI() == 0)
+        {
+            Reload();
+        };
     }
 
     private void Reload()
@@ -167,14 +185,17 @@ public class PlayerWeaponManager : MonoBehaviour
 
         reloading = true;
         Debug.Log("Reloading...");
+        GameUIManager.Instance.UpdateUIForReloading();
 
-        Invoke("ReloadFinished", currentWeaponData.reloadTime);
+        Invoke("ReloadFinished", currentWeaponData.GetReloadTime());
     }
 
     private void ReloadFinished()
     {
-        bulletsLeft = currentWeaponData.magazineSize;
+        currentWeaponData.Reload();
+
         reloading = false;
+        GameUIManager.Instance.UpdateUIOfBulletStatusForCurrentWp(currentWeaponData);
         Debug.Log("Reload complete.");
     }
 

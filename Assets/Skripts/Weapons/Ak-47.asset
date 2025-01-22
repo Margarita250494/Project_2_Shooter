@@ -18,8 +18,8 @@ MonoBehaviour:
   range: 100
   damage: 7
   fireRate: 0.1
-  magazineSize: 47
-  reloadTime: 0
+  magazineSize: 30
+  reloadTime: 3
   spread: 0.03
   bulletsPerShot: 1
   shootSound: {fileID: 8300000, guid: 019511abd94b1424da55576aa7c443fa, type: 3}

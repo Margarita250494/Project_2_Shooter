@@ -46,7 +46,7 @@ public class EnemyScript : MonoBehaviour
         }
         Destroy(gameObject); // Destroy the enemy immediately upon death
 
-        GameManager.Instance.GainScore(1);
+        GameUIManager.Instance.GainScore(1);
     }
 
     private void SelfDestruct()
