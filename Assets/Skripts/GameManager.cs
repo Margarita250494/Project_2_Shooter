@@ -53,6 +53,12 @@ public class Gun
 
 public class GameManager : MonoBehaviour
 {
+    /*
+     *  Information from Weapon from Vlad
+     */
+
+    public static GameManager Instance;
+
     public Text[] BulletLeftTexts; //Pistol, Rifle, Shotgun
     public GameObject[] GunBackgrounds; //Pistol, Rifle, Shotgun
 
@@ -83,6 +89,18 @@ public class GameManager : MonoBehaviour
     public bool TimerOn { get; private set; } // TimerOn is public, but only modifiable within this class
     private int Score;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {

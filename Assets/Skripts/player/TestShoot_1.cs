@@ -10,7 +10,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     private float nextFireTime = 0f;
     private bool reloading = false;
-    private int bulletsLeft;
+    public int bulletsLeft;
 
     private GameManager gameManager; // Reference to GameManager
 
@@ -155,6 +155,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
         bulletsLeft -= currentWeaponData.bulletsPerShot;
         PlaySound(currentWeaponData.shootSound);
+        //playerControllerUi.OnWeaponShoot(int weaponID)
         PlayMuzzleFlash();
         ApplyRecoil();
     }

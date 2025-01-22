@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyScript : MonoBehaviour
 {
     public int health = 20; // Enemy's starting health
-    private float selfDestructTimer = 10f; // Time until the enemy destroys itself
+    private float selfDestructTimer = 25f; // Time until the enemy destroys itself
     private Animator enemy;
     private AudioSource audioSource; // AudioSource component reference
     public AudioClip dieSound; // Audio clip for the death sound
@@ -14,7 +14,7 @@ public class EnemyScript : MonoBehaviour
         Invoke(nameof(SelfDestruct), selfDestructTimer);
         enemy = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
-
+        
 
     }
 
@@ -35,10 +35,10 @@ public class EnemyScript : MonoBehaviour
     {
         Debug.Log("Enemy died!");
         // Play the death animation
-       /* if (enemy != null)
+       if (enemy != null)
         {
            enemy.SetTrigger("Die"); // Trigger the "Die" animation
-        }*/
+        }
         // Play the death sound
         if (audioSource != null && dieSound != null)
         {
@@ -46,6 +46,7 @@ public class EnemyScript : MonoBehaviour
         }
         Destroy(gameObject); // Destroy the enemy immediately upon death
 
+        GameManager.Instance.GainScore(1);
     }
 
     private void SelfDestruct()
