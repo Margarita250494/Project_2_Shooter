@@ -89,7 +89,7 @@ public class PlayerWeaponManager : MonoBehaviour
             Destroy(currentWeaponModel);
         }
 
-        // Instantiate the new weapon model as a child of the weapon holder or PlayerCam
+        // Instantiate the new weapon model as a child of the weapon holder
         if (currentWeaponData.weaponModel != null)
         {
             currentWeaponModel = Instantiate(currentWeaponData.weaponModel, weaponHolder);
@@ -100,19 +100,14 @@ public class PlayerWeaponManager : MonoBehaviour
             Debug.LogWarning("Weapon model is null!");
         }
 
-        nextFireTime = Time.time + currentWeaponData.fireRate;
+        // Allow instant firing after switching weapons
+        nextFireTime = Time.time; // Reset cooldown
     }
+
 
     private void Shoot()
     {
-        /*
-        if (bulletsLeft == 1)
-        {
-            Debug.Log("Ammo! 1");
-            Reload();
-            return;
-        }
-        */
+       
 
         if (reloading) return;
 
