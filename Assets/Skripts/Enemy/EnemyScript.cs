@@ -14,6 +14,8 @@ public class EnemyScript : MonoBehaviour
     private float[] RangeX;
     private float[] RangeZ;
 
+    private bool isDead = false;
+
     private void Start()
     {
         // Schedule self-destruction after the timer expires
@@ -82,21 +84,32 @@ public class EnemyScript : MonoBehaviour
 
     private void Die()
     {
+        if (isDead) return; // Prevent multiple calls to Die
+        isDead = true;
+
         Debug.Log("Enemy died!");
+
         // Play the death animation
-       if (enemy != null)
+        if (enemy != null)
         {
-           enemy.SetTrigger("Die"); // Trigger the "Die" animation
+            enemy.SetTrigger("Die");
         }
+
         // Play the death sound
-        if (audioSource != null && dieSound != null)
+        if (audioSource != null && audioSource.clip != null)
         {
-            audioSource.PlayOneShot(dieSound); // Play the death sound
+            audioSource.Play();
+            Destroy(gameObject, audioSource.clip.length); // Delay destruction until sound finishes
         }
-        Destroy(gameObject); // Destroy the enemy immediately upon death
+        else
+        {
+            Debug.LogWarning("AudioSource or clip is missing. Destroying immediately.");
+            Destroy(gameObject); // Fallback if no audio source or clip is set
+        }
 
         GameUIManager.Instance.GainScore(1);
     }
+
 
     private void SelfDestruct()
     {

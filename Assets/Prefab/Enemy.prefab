@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8422143769097302430}
   - component: {fileID: 8020894663286503034}
   - component: {fileID: -1140297118233186155}
-  - component: {fileID: 4346247969637872940}
   m_Layer: 3
   m_Name: Enemy
   m_TagString: Untagged
@@ -49,7 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 20
-  dieSound: {fileID: 8300000, guid: b54e01568761a4edaa20bb82f6e8098a, type: 3}
 --- !u!82 &-1140297118233186155
 AudioSource:
   m_ObjectHideFlags: 0
@@ -60,15 +58,15 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: b54e01568761a4edaa20bb82f6e8098a, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ba8798be9b57d1048aa21af75b9dc403, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.151
+  m_Volume: 0.612
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 0
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -146,27 +144,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!95 &4346247969637872940
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4653198036521270396}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5699608549771723246
 GameObject:
   m_ObjectHideFlags: 0

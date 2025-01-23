@@ -17,10 +17,10 @@ MonoBehaviour:
     type: 3}
   range: 30
   damage: 10
-  fireRate: 1
+  fireRate: 0.8
   magazineSize: 18
-  reloadTime: 5
-  spread: 0.45
+  reloadTime: 2
+  spread: 0.23
   bulletsPerShot: 6
   shootSound: {fileID: 8300000, guid: 2473f6082447648afb712f636a7b6f76, type: 3}
   reloadSound: {fileID: 8300000, guid: c616081246c474ef2b84ce4390da8627, type: 3}
@@ -28,5 +28,5 @@ MonoBehaviour:
     type: 3}
   allowHoldFire: 0
   recoilX: 0.3
-  recoilY: 2
+  recoilY: 1.2
   recoilZ: 0

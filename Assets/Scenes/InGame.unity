@@ -6799,17 +6799,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4346247969637872940, guid: f5b1ddb56bd77f54da9020a30bbd4099,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 53dcc89412d0ce240b597375bb5223a5, type: 2}
+      objectReference: {fileID: 8300000, guid: 1dd2e627bee590e4fa941c1002119f07, type: 3}
     - target: {fileID: 4653198036521270396, guid: f5b1ddb56bd77f54da9020a30bbd4099,
         type: 3}
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 8020894663286503034, guid: f5b1ddb56bd77f54da9020a30bbd4099,
+        type: 3}
+      propertyPath: dieSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 1dd2e627bee590e4fa941c1002119f07, type: 3}
     - target: {fileID: 8422143769097302430, guid: f5b1ddb56bd77f54da9020a30bbd4099,
         type: 3}
       propertyPath: m_LocalPosition.x
