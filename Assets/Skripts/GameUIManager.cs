@@ -28,7 +28,7 @@ public class GameUIManager : MonoBehaviour
 
     private float TimeLeft;
 
-    private int CurrentGun; //Pistol = 1, Rifle = 2, Shotgun = 3
+    private int CurrentGun = 0; //Pistol = 0, Rifle = 1, Shotgun = 2
     public bool TimerOn { get; private set; } // TimerOn is public, but only modifiable within this class
     private int Score;
 
@@ -37,7 +37,7 @@ public class GameUIManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -152,12 +152,15 @@ public class GameUIManager : MonoBehaviour
         TimerOn = false;
 
 
-       int storedHighscore = PlayerPrefs.GetInt(ModeManager.Instance.HighscoreKey);
+       int storedHighscore = PlayerPrefs.GetInt(ModeManager.Instance.HighscoreKey, 0);
 
         if (Score > storedHighscore)
         {
             PlayerPrefs.SetInt(ModeManager.Instance.HighscoreKey, Score);
             PlayerPrefs.SetString(ModeManager.Instance.HighscoreTimestampKey, DateTime.Now.ToString("HH:mm dd.MM.yyyy"));
+
+            PlayerPrefs.Save();
+
             FinishCanvasHighscoreText.text = "Congratulation! New Highscore!";
         }
         else FinishCanvasHighscoreText.text = "Highscore: " + storedHighscore;
@@ -166,5 +169,11 @@ public class GameUIManager : MonoBehaviour
     public void BackHome()
     {
         SceneManager.LoadScene("Home");
+    }
+
+    public void Restart()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
 }

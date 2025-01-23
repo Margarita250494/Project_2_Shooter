@@ -4,19 +4,45 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    public static EnemySpawner Instance;
+
     public GameObject enemyPrefab; // Prefab of the enemy to spawn
+    public GameObject enemyFloor; 
     public int maxEnemy = 6; // Maximum number of enemies at a time
-    public float spawnRange = 20f; // Range for x and z spawning
     public float spawnInterval = 1f; // Time between spawn checks
     public string enemyLayerName = "Enemy"; // Name of the enemy layer
 
     private int numOfEnemy = 0;
     private List<GameObject> enemyList = new List<GameObject>();
 
+    public float[] RangeX = new float[2];
+    public float[] RangeZ = new float[2];
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            //DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
         // Start the spawn coroutine
         StartCoroutine(SpawnEnemies());
+
+        MeshRenderer meshRenderer = enemyFloor.GetComponent<MeshRenderer>();
+        Vector3 floorSize = meshRenderer.bounds.size;
+
+        RangeX[0] = transform.position.x - (floorSize.x - 6) / 2;
+        RangeX[1] = transform.position.x + (floorSize.x - 6) / 2;
+        RangeZ[0] = transform.position.z - (floorSize.z - 6) / 2;
+        RangeZ[1] = transform.position.z + (floorSize.z - 6) / 2;
     }
 
     private IEnumerator SpawnEnemies()
@@ -40,6 +66,8 @@ public class EnemySpawner : MonoBehaviour
         float x, z;
 
         // Generate spawn positions relative to the spawner's position
+
+        /*
         do
         {
             x = Random.Range(-spawnRange, spawnRange);
@@ -54,6 +82,16 @@ public class EnemySpawner : MonoBehaviour
             transform.position.x + x,
             transform.position.y, // Use the spawner's y-coordinate
             transform.position.z + z
+        );
+        */
+
+        x = Random.Range(RangeX[0], RangeX[1]);
+        z = Random.Range(RangeZ[0], RangeZ[1]);
+
+        Vector3 spawnPosition = new Vector3(
+            x,
+            transform.position.y, // Use the spawner's y-coordinate
+            z
         );
 
         // Spawn the enemy
