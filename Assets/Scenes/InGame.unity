@@ -6697,17 +6697,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4346247969637872940, guid: f5b1ddb56bd77f54da9020a30bbd4099,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 53dcc89412d0ce240b597375bb5223a5, type: 2}
+      objectReference: {fileID: 8300000, guid: 1dd2e627bee590e4fa941c1002119f07, type: 3}
     - target: {fileID: 4653198036521270396, guid: f5b1ddb56bd77f54da9020a30bbd4099,
         type: 3}
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 8020894663286503034, guid: f5b1ddb56bd77f54da9020a30bbd4099,
+        type: 3}
+      propertyPath: dieSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 1dd2e627bee590e4fa941c1002119f07, type: 3}
     - target: {fileID: 8422143769097302430, guid: f5b1ddb56bd77f54da9020a30bbd4099,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -11238,7 +11238,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5c4fc56983c40924ebc76e41580aa80e, type: 2}
   - {fileID: 11400000, guid: 353945b8262be7344af27e08844f2d92, type: 2}
   weaponHolder: {fileID: 1170385585}
-  bulletsLeft: 0
 --- !u!114 &1941933000
 MonoBehaviour:
   m_ObjectHideFlags: 0
