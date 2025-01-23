@@ -8,7 +8,9 @@ public class EnemyScript : MonoBehaviour
     public AudioClip dieSound; // Audio clip for the death sound
 
     private float speed;
-    private bool isDirectionXForHardOrExtremeMode; // 0 for X and 1 for Z
+    private bool isDirectionXForHardMode;
+    private Vector3 directionForExtremeMode;
+    private float timeToChangeDirectionInExtremeMode = 0;
 
     private float[] RangeX;
     private float[] RangeZ;
@@ -35,7 +37,7 @@ public class EnemyScript : MonoBehaviour
                     speed = Random.Range(-0.2f, 0.2f);
                 } while (speed < 0.1f && speed > -0.1f);
 
-                isDirectionXForHardOrExtremeMode = Random.Range(0, 2) == 0;
+                isDirectionXForHardMode = Random.Range(0, 2) == 0;
 
                 break;
             case 3:
@@ -44,7 +46,7 @@ public class EnemyScript : MonoBehaviour
                     speed = Random.Range(-0.3f, 0.3f);
                 } while (speed < 0.2f && speed > -0.2f);
 
-                isDirectionXForHardOrExtremeMode = Random.Range(0, 2) == 0;
+                isDirectionXForHardMode = Random.Range(0, 2) == 0;
 
                 break;
         }
@@ -119,7 +121,7 @@ public class EnemyScript : MonoBehaviour
 
     private void MovementForHardMode()
     {
-        if (isDirectionXForHardOrExtremeMode)
+        if (isDirectionXForHardMode)
         {
             float x = transform.position.x + speed;
             if (x > RangeX[1] || x < RangeX[0])
@@ -135,42 +137,29 @@ public class EnemyScript : MonoBehaviour
 
     private void MovementForExtremeMode()
     {
-        if (isDirectionXForHardOrExtremeMode)
+        if(timeToChangeDirectionInExtremeMode <= 0)
         {
-            float x = transform.position.x + speed;
-            if (x > RangeX[1] || x < RangeX[0])
+            timeToChangeDirectionInExtremeMode = Random.Range(0f, 2f);
+
+            float x = Random.Range(-1f, 1f);
+            float z = (Random.Range(0, 2) == 0 ? -1 : 1) * Mathf.Sqrt(1 - x * x);
+
+            directionForExtremeMode = new Vector3(x, 0, z);
+        } else
+        {
+            timeToChangeDirectionInExtremeMode -= Time.deltaTime;
+
+            Vector3 newPos = transform.position + directionForExtremeMode * speed;
+
+            if (newPos.x < RangeX[0] || newPos.x > RangeX[1])
             {
-                speed = -speed;
-                x = transform.position.x + speed;
+                directionForExtremeMode.x *= -1;
             }
-
-            float deltaZ = (Random.Range(0, 5) - 2) * speed;
-
-            float z = transform.position.z + deltaZ;
-            if (z > RangeZ[1] || z < RangeZ[0])
+            else if (newPos.z < RangeZ[0] || newPos.z > RangeZ[1])
             {
-                z = transform.position.z;
+                directionForExtremeMode.z *= -1;
             }
-
-            transform.position = new Vector3(x, transform.position.y, z);
-        }
-        else {
-            float z = transform.position.z + speed;
-            if (z > RangeZ[1] || z < RangeZ[0])
-            {
-                speed = -speed;
-                z = transform.position.z + speed;
-            }
-
-            float deltaX = (Random.Range(0, 5) - 2) * speed;
-
-            float x = transform.position.x + deltaX;
-            if (x > RangeX[1] || x < RangeX[0])
-            {
-                x = transform.position.x;
-            }
-
-            transform.position = new Vector3(x, transform.position.y, z);
+            else transform.position = newPos;
         }
     }
 }
