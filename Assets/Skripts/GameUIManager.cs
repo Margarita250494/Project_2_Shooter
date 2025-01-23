@@ -11,6 +11,8 @@ public class GameUIManager : MonoBehaviour
 {
     public static GameUIManager Instance;
 
+    private AudioSource audioSource; // AudioSource component reference
+
     public Text[] BulletLeftTexts; //Pistol, Rifle, Shotgun
     public GameObject[] GunBackgrounds; //Pistol, Rifle, Shotgun
 
@@ -50,6 +52,8 @@ public class GameUIManager : MonoBehaviour
         Debug.Log(ModeManager.Instance.ModeNr);
         TimerOn = true;
         TimeLeft = MaxTime;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -110,6 +114,8 @@ public class GameUIManager : MonoBehaviour
     { 
         Score += Addition;
         InGameScoreText.text = Score.ToString();
+
+        audioSource.Play();
     }
 
     public void TogglePause()

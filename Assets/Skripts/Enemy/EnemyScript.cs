@@ -5,7 +5,6 @@ public class EnemyScript : MonoBehaviour
     public int health = 20; // Enemy's starting health
     private float selfDestructTimer = 25f; // Time until the enemy destroys itself
     private Animator enemy;
-    private AudioSource audioSource; // AudioSource component reference
     public AudioClip dieSound; // Audio clip for the death sound
 
     private float speed;
@@ -21,7 +20,6 @@ public class EnemyScript : MonoBehaviour
         // Schedule self-destruction after the timer expires
         Invoke(nameof(SelfDestruct), selfDestructTimer);
         enemy = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
 
         RangeX = EnemySpawner.Instance.RangeX;
         RangeZ = EnemySpawner.Instance.RangeZ;
@@ -95,17 +93,7 @@ public class EnemyScript : MonoBehaviour
             enemy.SetTrigger("Die");
         }
 
-        // Play the death sound
-        if (audioSource != null && audioSource.clip != null)
-        {
-            audioSource.Play();
-            Destroy(gameObject, audioSource.clip.length); // Delay destruction until sound finishes
-        }
-        else
-        {
-            Debug.LogWarning("AudioSource or clip is missing. Destroying immediately.");
-            Destroy(gameObject); // Fallback if no audio source or clip is set
-        }
+        Destroy(gameObject);
 
         GameUIManager.Instance.GainScore(1);
     }
@@ -156,7 +144,7 @@ public class EnemyScript : MonoBehaviour
                 x = transform.position.x + speed;
             }
 
-            float deltaZ = (Random.Range(0, 3) - 1) * speed;
+            float deltaZ = (Random.Range(0, 5) - 2) * speed;
 
             float z = transform.position.z + deltaZ;
             if (z > RangeZ[1] || z < RangeZ[0])
@@ -174,7 +162,7 @@ public class EnemyScript : MonoBehaviour
                 z = transform.position.z + speed;
             }
 
-            float deltaX = (Random.Range(0, 3) - 1) * speed;
+            float deltaX = (Random.Range(0, 5) - 2) * speed;
 
             float x = transform.position.x + deltaX;
             if (x > RangeX[1] || x < RangeX[0])
