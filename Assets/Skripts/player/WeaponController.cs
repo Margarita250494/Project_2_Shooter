@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class PlayerWeaponManager : MonoBehaviour
 {
     public Weapon[] availableWeapons; // List of all available weapons
