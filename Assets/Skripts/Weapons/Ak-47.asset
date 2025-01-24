@@ -19,10 +19,10 @@ MonoBehaviour:
   damage: 7
   fireRate: 0.15
   magazineSize: 30
-  reloadTime: 3
+  reloadTime: 2
   spread: 0.03
   bulletsPerShot: 1
-  shootSound: {fileID: 8300000, guid: 019511abd94b1424da55576aa7c443fa, type: 3}
+  shootSound: {fileID: 8300000, guid: 77e68be5d2dc348cb9d4352e83767cd9, type: 3}
   reloadSound: {fileID: 8300000, guid: b24c91faf596e43d7835b899ec2824bf, type: 3}
   muzzleFlashPrefab: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
     type: 3}
