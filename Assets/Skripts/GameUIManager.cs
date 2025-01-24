@@ -50,13 +50,19 @@ public class GameUIManager : MonoBehaviour
     void Start()
     {
         Debug.Log(ModeManager.Instance.ModeNr);
+
+        // Ensure the game is unpaused
+        Time.timeScale = 1f;
+
         TimerOn = true;
         TimeLeft = MaxTime;
 
         audioSource = GetComponent<AudioSource>();
     }
 
-    void Update()
+
+
+void Update()
     {
         if (!TimerOn) return;
 
@@ -174,8 +180,10 @@ public class GameUIManager : MonoBehaviour
 
     public void BackHome()
     {
+        Time.timeScale = 1f; // Ensure the game is unpaused before loading the main menu
         SceneManager.LoadScene("Home");
     }
+
 
     public void Restart()
     {
