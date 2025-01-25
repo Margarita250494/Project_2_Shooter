@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public RectTransform textRectTransform;
     public Text HighscoreText;
     public Text[] ButtonTexts;
+    public GameObject ExitCanvas;
 
     private float currentLeftValue;
     private float resetValue;
@@ -67,13 +68,31 @@ public class UIManager : MonoBehaviour
         HighscoreText.text = text;
     }
 
-    public void PointerEnterButton(int modeNr)
+    public void PointerEnterButton(int buttonNr)
     {
-        ButtonTexts[modeNr].color = new Color(200f/255, 107f/255, 27f/255);
+        ButtonTexts[buttonNr].color = new Color(200f/255, 107f/255, 27f/255);
     }
 
-    public void PointerOutButton(int modeNr)
+    public void PointerOutButton(int buttonNr)
     {
-        ButtonTexts[modeNr].color = new Color(1f, 1f, 1f);
+        ButtonTexts[buttonNr].color = new Color(1f, 1f, 1f);
+    }
+
+    public void ExitButtonOnclick()
+    {
+        ExitCanvas.SetActive(true);
+    }
+
+    public void CancelExitOnclick()
+    {
+        ExitCanvas.SetActive(false);
+        ButtonTexts[4].color = new Color(1f, 1f, 1f);
+        ButtonTexts[5].color = new Color(1f, 1f, 1f);
+    }
+
+    public void QuitExitOnclick()
+    {
+        Debug.Log("Quitting");
+        Application.Quit();
     }
 }

@@ -22,6 +22,11 @@ public class PlayerCam : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        // Set the initial rotation to match the camera's starting rotation
+        Vector3 initialRotation = transform.rotation.eulerAngles;
+        xRotation = initialRotation.x;
+        yRotation = initialRotation.y;
+
         // Set the slider's initial value to match the current sensitivity
         sensitivitySlider.value = sensitivity;
 
